@@ -1,16 +1,17 @@
+import axios from 'axios';
 import { useEffect, useState } from 'react';
-import { authService } from './services/authService';
+import { register, login } from './services/authService';
 import { deckService } from './services/deckService';
 import './index.css';
 
 export default function App() {
   const [isLogged, setIsLogged] = useState(false);
-  const [register, setRegister] = useState(false);
+  const [isRegister, setIsRegister] = useState(false);
 
   const handleLogin = async () => {
     try {
       //Identifiants de test
-      await authService.login('john@example.com', 'password123');
+      await login({email:'john@example.com', password:'password123'});
       console.log('✅ Connexion réussie');
       setIsLogged(true);
       
@@ -25,9 +26,9 @@ export default function App() {
     const handleRegister = async () => {
     try {
       //Identifiants de test
-      await authService.register('john@example.com', 'password123');
+      await register({name : 'John Doe', email : 'john@example.com', password :'password123'});
       console.log('✅ Inscription réussie');
-      setRegister(true);
+      setIsRegister(true);
       
       // Maintenant on peut récupérer les decks
       const decks = await deckService.getAll();
@@ -52,10 +53,12 @@ export default function App() {
         <p>✅ Connecté ! Ouvrez la console</p>
       )}
 
-      {!register? (
+      {!isRegister? (
         <div>
           <p>Vous devez vous inscrire</p>
-          <button onClick={handleRegister}>
+          <button 
+          onClick={handleRegister}
+          >
             S'inscrire
           </button>
         </div>
