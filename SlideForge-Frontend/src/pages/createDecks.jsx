@@ -1,133 +1,76 @@
-import React, { useState } from 'react';
-import { createDeck } from '../services/deckService';
-import { useNavigate } from 'react-router-dom';
+import React, { useState } from "react";
+import { useNavigate } from "react-router-dom";
+import deckService from "../services/deckService";
 
 const CreateDeck = () => {
   const navigate = useNavigate();
-  const [formData, setFormData] = useState({
-    title: '',
-    theme: '',
-    ratio: ''
-  });
+  const [title, setTitle] = useState("");
+  const [theme, setTheme] = useState("default");
+  const [ratio, setRatio] = useState("16:9");
+  const [error, setError] = useState("");
 
-  const [error, setError] = useState('');
-  const [success, setSuccess] = useState('');
-
-  const handleChange = (e) => {
-    setFormData({
-      ...formData,
-      [e.target.name]: e.target.value
-    });
-  };
+  const themesDisponibles = ["default", "dark", "light", "blue", "green", "red", "purple"];
+  const ratiosDisponibles = ["16:9", "4:3", "16:10"];
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    setError('');
-    setSuccess('');
+    setError("");
 
     try {
-      const data = await createDeck(
-        formData.title,
-        formData.theme,
-        formData.ratio
-      );
+      const data = await deckService.create({ title, theme, ratio });
+      console.log("✅ Deck créé :", data);
 
-      console.log('✅ Deck créé :', data);
-      setSuccess('Deck créé avec succès !');
-      setTimeout(() => navigate('/decks'), 2000);
+      // Redirection vers createSlides avec le deckId
+      navigate(`/create-slides?deckId=${data.id}`);
     } catch (err) {
-      console.error(err);
+      console.error("❌ Erreur lors de la création :", err);
       setError(
-        err.response?.data?.message ||
-        '❌ Une erreur est survenue lors de la création du deck.'
+        err.response?.data?.message || "Erreur inconnue lors de la création du deck."
       );
     }
   };
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-gray-100">
-      <div className="bg-white shadow-lg rounded-2xl p-8 w-full max-w-md">
-        <h2 className="text-2xl font-bold text-center mb-6">Créer un Deck</h2>
+    <div className="page-container">
+      <h1>Créer un Deck</h1>
+      <form onSubmit={handleSubmit} className="form-container">
+        <label>
+          Titre du deck :
+          <input
+            type="text"
+            value={title}
+            onChange={(e) => setTitle(e.target.value)}
+            required
+          />
+        </label>
 
-        <form onSubmit={handleSubmit} className="space-y-4">
-          {/* Titre */}
-          <div>
-            <label htmlFor="title" className="block text-sm font-medium text-gray-700">
-              Titre du deck
-            </label>
-            <input
-              type="text"
-              id="title"
-              name="title"
-              value={formData.title}
-              onChange={handleChange}
-              required
-              className="mt-1 w-full border-gray-300 rounded-lg shadow-sm focus:ring-blue-500 focus:border-blue-500"
-              placeholder="Ex : Civilizations"
-            />
-          </div>
+        <label>
+          Thème :
+          <select value={theme} onChange={(e) => setTheme(e.target.value)} required>
+            {themesDisponibles.map((t) => (
+              <option key={t} value={t}>
+                {t}
+              </option>
+            ))}
+          </select>
+        </label>
 
-          {/* Thème */}
-          <div>
-            <label htmlFor="theme" className="block text-sm font-medium text-gray-700">
-              Thème
-            </label>
-            <input
-              type="text"
-              id="theme"
-              name="theme"
-              value={formData.theme}
-              onChange={handleChange}
-              required
-              className="mt-1 w-full border-gray-300 rounded-lg shadow-sm focus:ring-blue-500 focus:border-blue-500"
-              placeholder="Ex : Histoire, Science..."
-            />
-          </div>
+        <label>
+          Ratio :
+          <select value={ratio} onChange={(e) => setRatio(e.target.value)}>
+            {ratiosDisponibles.map((r) => (
+              <option key={r} value={r}>
+                {r}
+              </option>
+            ))}
+          </select>
+        </label>
 
-          {/* Ratio */}
-          <div>
-            <label htmlFor="ratio" className="block text-sm font-medium text-gray-700">
-              Ratio (facultatif)
-            </label>
-            <input
-              type="text"
-              id="ratio"
-              name="ratio"
-              value={formData.ratio}
-              onChange={handleChange}
-              className="mt-1 w-full border-gray-300 rounded-lg shadow-sm focus:ring-blue-500 focus:border-blue-500"
-              placeholder="Ex : 16:9"
-            />
-          </div>
+        {/* Supprime l'onClick : le submit appelle handleSubmit qui gère la navigation */}
+        <button type="submit">Créer le deck</button>
 
-          {/* Messages */}
-          {error && (
-            <p className="text-red-500 text-sm text-center mt-2">{error}</p>
-          )}
-          {success && (
-            <p className="text-green-600 text-sm text-center mt-2">{success}</p>
-          )}
-
-          {/* Bouton */}
-          <button
-            type="submit"
-            className="w-full bg-blue-600 hover:bg-blue-700 text-white font-semibold py-2 rounded-lg transition duration-200"
-            onClick={() => navigate('/create-slide')}
-          >
-            Créer le deck
-          </button>
-        </form>
-
-        {/* Retour */}
-        <p className="text-sm text-center text-gray-600 mt-4">
-          <button
-            onClick={() => navigate(-1)}
-            className="text-blue-600 hover:underline"
-          >
-            ← Retour
-          </button>
-        </p>
-      </div>
+        {error && <p style={{ color: "red" }}>{error}</p>}
+      </form>
     </div>
   );
 };
