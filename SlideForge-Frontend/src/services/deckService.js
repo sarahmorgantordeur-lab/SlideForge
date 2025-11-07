@@ -1,18 +1,15 @@
 import api from './api';
 
-export const deckService = {
+const deckService = {
+  getAll: () => api.get('/decks'),
 
-  getAll: () => api.get('/api/decks'),
-  
+  getById: (id) => api.get(`/decks/${id}`),
 
-  getById: (id) => api.get(`/api/decks/${id}`),
-  
+  create: (data) => api.post('/decks', data),
 
-  create: (data) => api.post('/api/decks', data),
-  
+  update: (id, data) => api.put(`/decks/${id}`, data),
 
-  update: (id, data) => api.put(`/api/decks/${id}`, data),
-  
-
-  delete: (id) => api.delete(`/api/decks/${id}`),
+  delete: (id) => api.delete(`/decks/${id}`)
 };
+
+export default deckService;

@@ -1,5 +1,6 @@
 import axios from 'axios';
 import api from './api';
+import deckService from './deckService';
 
 // Inscription
 export const register = async (name, email, password) => {
