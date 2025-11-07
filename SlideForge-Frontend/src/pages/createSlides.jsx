@@ -1,13 +1,14 @@
 import React, { useState } from 'react';
-import { createDeck } from '../services/deckService';
 import { useNavigate } from 'react-router-dom';
+import { createSlide } from '../services/slidesService';
 
-const CreateDeck = () => {
+const CreateSlides = () => {
   const navigate = useNavigate();
   const [formData, setFormData] = useState({
+    deckId: '',
     title: '',
-    theme: '',
-    ratio: ''
+    content: '',
+    order: ''
   });
 
   const [error, setError] = useState('');
@@ -26,20 +27,21 @@ const CreateDeck = () => {
     setSuccess('');
 
     try {
-      const data = await createDeck(
+      const data = await createSlide(
+        formData.deckId,
         formData.title,
-        formData.theme,
-        formData.ratio
+        formData.content,
+        formData.order
       );
 
-      console.log('✅ Deck créé :', data);
-      setSuccess('Deck créé avec succès !');
+      console.log('✅ Slide créé :', data);
+      setSuccess('La diapositive a été créée avec succès !');
       setTimeout(() => navigate('/decks'), 2000);
     } catch (err) {
       console.error(err);
       setError(
         err.response?.data?.message ||
-        '❌ Une erreur est survenue lors de la création du deck.'
+        '❌ Une erreur est survenue lors de la création de la diapositive.'
       );
     }
   };
@@ -47,13 +49,30 @@ const CreateDeck = () => {
   return (
     <div className="min-h-screen flex items-center justify-center bg-gray-100">
       <div className="bg-white shadow-lg rounded-2xl p-8 w-full max-w-md">
-        <h2 className="text-2xl font-bold text-center mb-6">Créer un Deck</h2>
+        <h2 className="text-2xl font-bold text-center mb-6">Créer une diapositive</h2>
 
         <form onSubmit={handleSubmit} className="space-y-4">
+          {/* ID du deck */}
+          <div>
+            <label htmlFor="deckId" className="block text-sm font-medium text-gray-700">
+              ID du deck
+            </label>
+            <input
+              type="text"
+              id="deckId"
+              name="deckId"
+              value={formData.deckId}
+              onChange={handleChange}
+              required
+              className="mt-1 w-full border-gray-300 rounded-lg shadow-sm focus:ring-blue-500 focus:border-blue-500"
+              placeholder="Entrez l’ID du deck"
+            />
+          </div>
+
           {/* Titre */}
           <div>
             <label htmlFor="title" className="block text-sm font-medium text-gray-700">
-              Titre du deck
+              Titre de la diapositive
             </label>
             <input
               type="text"
@@ -63,58 +82,53 @@ const CreateDeck = () => {
               onChange={handleChange}
               required
               className="mt-1 w-full border-gray-300 rounded-lg shadow-sm focus:ring-blue-500 focus:border-blue-500"
-              placeholder="Ex : Civilizations"
+              placeholder="Ex : Introduction à la physique"
             />
           </div>
 
-          {/* Thème */}
+          {/* Contenu */}
           <div>
-            <label htmlFor="theme" className="block text-sm font-medium text-gray-700">
-              Thème
+            <label htmlFor="content" className="block text-sm font-medium text-gray-700">
+              Contenu
             </label>
-            <input
-              type="text"
-              id="theme"
-              name="theme"
-              value={formData.theme}
+            <textarea
+              id="content"
+              name="content"
+              value={formData.content}
               onChange={handleChange}
               required
+              rows="4"
               className="mt-1 w-full border-gray-300 rounded-lg shadow-sm focus:ring-blue-500 focus:border-blue-500"
-              placeholder="Ex : Histoire, Science..."
+              placeholder="Saisissez le contenu de la diapositive..."
             />
           </div>
 
-          {/* Ratio */}
+          {/* Ordre */}
           <div>
-            <label htmlFor="ratio" className="block text-sm font-medium text-gray-700">
-              Ratio (facultatif)
+            <label htmlFor="order" className="block text-sm font-medium text-gray-700">
+              Ordre (facultatif)
             </label>
             <input
-              type="text"
-              id="ratio"
-              name="ratio"
-              value={formData.ratio}
+              type="number"
+              id="order"
+              name="order"
+              value={formData.order}
               onChange={handleChange}
               className="mt-1 w-full border-gray-300 rounded-lg shadow-sm focus:ring-blue-500 focus:border-blue-500"
-              placeholder="Ex : 16:9"
+              placeholder="Ex : 1"
             />
           </div>
 
           {/* Messages */}
-          {error && (
-            <p className="text-red-500 text-sm text-center mt-2">{error}</p>
-          )}
-          {success && (
-            <p className="text-green-600 text-sm text-center mt-2">{success}</p>
-          )}
+          {error && <p className="text-red-500 text-sm text-center mt-2">{error}</p>}
+          {success && <p className="text-green-600 text-sm text-center mt-2">{success}</p>}
 
           {/* Bouton */}
           <button
             type="submit"
             className="w-full bg-blue-600 hover:bg-blue-700 text-white font-semibold py-2 rounded-lg transition duration-200"
-            onClick={() => navigate('/create-slide')}
           >
-            Créer le deck
+            Créer la diapositive
           </button>
         </form>
 
@@ -132,4 +146,4 @@ const CreateDeck = () => {
   );
 };
 
-export default CreateDeck;
+export default CreateSlides;
