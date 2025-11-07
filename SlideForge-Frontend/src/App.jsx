@@ -1,7 +1,7 @@
 import axios from 'axios';
 import { useEffect, useState } from 'react';
 import { register, login } from './services/authService';
-import { deckService } from './services/deckService';
+// import { deckService } from './services/deckService';
 import './index.css';
 
 export default function App() {
@@ -30,9 +30,9 @@ export default function App() {
       console.log('✅ Inscription réussie');
       setIsRegister(true);
       
-      // Maintenant on peut récupérer les decks
-      const decks = await deckService.getAll();
-      console.log('✅ Decks:', decks.data);
+      // // Maintenant on peut récupérer les decks
+      // const decks = await deckService.getAll();
+      // console.log('✅ Decks:', decks.data);
     } catch (error) {
       console.error('❌ Erreur:', error.response?.data || error.message);
     }
