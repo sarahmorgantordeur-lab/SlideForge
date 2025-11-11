@@ -15,7 +15,7 @@ export default function Register() {
 
     try {
       await register(name, email, password);
-      navigate("/login");
+      navigate("/create-deck");
     } catch (err) {
       setError(err.response?.data?.message || "Erreur lors de l'inscription");
     }

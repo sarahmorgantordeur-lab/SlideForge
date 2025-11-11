@@ -1,18 +1,18 @@
-import React, { useState } from 'react';
-import { useNavigate } from 'react-router-dom';
-import { createSlide } from '../services/slidesService';
+import React, { useState } from "react";
+import { useNavigate } from "react-router-dom";
+import { createSlide } from "../services/slidesService";
 
 const CreateSlides = () => {
   const navigate = useNavigate();
   const [formData, setFormData] = useState({
-    deckId: '',
-    title: '',
-    content: '',
-    order: ''
+    deckId: "",
+    title: "",
+    content: "",
+    order: ""
   });
 
-  const [error, setError] = useState('');
-  const [success, setSuccess] = useState('');
+  const [error, setError] = useState("");
+  const [success, setSuccess] = useState("");
 
   const handleChange = (e) => {
     setFormData({
@@ -23,25 +23,27 @@ const CreateSlides = () => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    setError('');
-    setSuccess('');
+    setError("");
+    setSuccess("");
 
     try {
-      const data = await createSlide(
-        formData.deckId,
-        formData.title,
-        formData.content,
-        formData.order
-      );
+      // ⚡ Nouveau format : on envoie un objet complet au service
+      const data = await createSlide({
+        deckId: parseInt(formData.deckId, 10),
+        title: formData.title,
+        content: formData.content,
+        order: formData.order ? parseInt(formData.order, 10) : undefined
+      });
 
-      console.log('✅ Slide créé :', data);
-      setSuccess('La diapositive a été créée avec succès !');
-      setTimeout(() => navigate('/decks'), 2000);
+      console.log("✅ Slide créé :", data);
+      setSuccess("La diapositive a été créée avec succès !");
+      // Redirige vers la page du deck après 2 secondes
+      setTimeout(() => navigate(`/create-deck`), 2000);
     } catch (err) {
       console.error(err);
       setError(
         err.response?.data?.message ||
-        '❌ Une erreur est survenue lors de la création de la diapositive.'
+          "❌ Une erreur est survenue lors de la création de la diapositive."
       );
     }
   };
@@ -52,13 +54,12 @@ const CreateSlides = () => {
         <h2 className="text-2xl font-bold text-center mb-6">Créer une diapositive</h2>
 
         <form onSubmit={handleSubmit} className="space-y-4">
-          {/* ID du deck */}
           <div>
             <label htmlFor="deckId" className="block text-sm font-medium text-gray-700">
               ID du deck
             </label>
             <input
-              type="text"
+              type="number"
               id="deckId"
               name="deckId"
               value={formData.deckId}
@@ -69,7 +70,6 @@ const CreateSlides = () => {
             />
           </div>
 
-          {/* Titre */}
           <div>
             <label htmlFor="title" className="block text-sm font-medium text-gray-700">
               Titre de la diapositive
@@ -86,7 +86,6 @@ const CreateSlides = () => {
             />
           </div>
 
-          {/* Contenu */}
           <div>
             <label htmlFor="content" className="block text-sm font-medium text-gray-700">
               Contenu
@@ -103,7 +102,6 @@ const CreateSlides = () => {
             />
           </div>
 
-          {/* Ordre */}
           <div>
             <label htmlFor="order" className="block text-sm font-medium text-gray-700">
               Ordre (facultatif)
@@ -119,11 +117,9 @@ const CreateSlides = () => {
             />
           </div>
 
-          {/* Messages */}
           {error && <p className="text-red-500 text-sm text-center mt-2">{error}</p>}
           {success && <p className="text-green-600 text-sm text-center mt-2">{success}</p>}
 
-          {/* Bouton */}
           <button
             type="submit"
             className="w-full bg-blue-600 hover:bg-blue-700 text-white font-semibold py-2 rounded-lg transition duration-200"
@@ -132,7 +128,6 @@ const CreateSlides = () => {
           </button>
         </form>
 
-        {/* Retour */}
         <p className="text-sm text-center text-gray-600 mt-4">
           <button
             onClick={() => navigate(-1)}
