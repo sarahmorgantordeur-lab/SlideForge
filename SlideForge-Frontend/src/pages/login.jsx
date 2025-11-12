@@ -6,7 +6,7 @@ export default function Login() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [error, setError] = useState("");
-  const navigate = useNavigate(); // Hook de navigation
+  const navigate = useNavigate();
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -14,8 +14,7 @@ export default function Login() {
 
     try {
       await login(email, password);
-      // ✅ Redirige vers la page de création de decks après connexion
-      navigate("/create-deck");
+      navigate("/decks");
     } catch (err) {
       setError(err.response?.data?.message || "Erreur de connexion");
     }

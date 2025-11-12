@@ -71,6 +71,14 @@ const CreateDeck = () => {
 
         {error && <p style={{ color: "red" }}>{error}</p>}
       </form>
+
+      <button
+        type="button"
+        onClick={() => navigate("/decks")}
+        className="mt-4 w-full bg-gray-600 hover:bg-gray-700 text-white font-semibold py-2 rounded-lg transition duration-200"
+      >
+        ← Mes Decks
+      </button>
     </div>
   );
 };

@@ -3,6 +3,8 @@ import CreateDecks from "./pages/createDecks";
 import CreateSlides from "./pages/createSlides";
 import Login from "./pages/login";
 import Register from "./pages/register";
+import SlidesDeck from "./pages/slidesDeck";
+import Decks from "./pages/decks";
 
 function MainRouter() {
   return (
@@ -12,6 +14,9 @@ function MainRouter() {
       <Route path="/create-slides" element={<CreateSlides />} />
       <Route path="/login" element={<Login />} />
       <Route path="/register" element={<Register />} />
+      <Route path="/decks/:id/slides" element={<SlidesDeck />} />
+      <Route path="/decks/:id/slides" element={<SlidesDeck />} />
+      <Route path="/decks" element={<Decks />} />
     </Routes>
   );
 }
